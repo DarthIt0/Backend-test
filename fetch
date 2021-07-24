@@ -1,0 +1,85 @@
+#!/usr/bin/python3
+
+import os
+import sys
+import asyncio
+from aiohttp import ClientSession
+import aiofiles
+from bs4 import BeautifulSoup
+import time
+
+
+
+async def dowload_url(url):
+  try:
+    headers = { 'user-agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+    async with ClientSession(headers=headers) as session:
+      response = await session.get(url)
+      raw_text = await response.text()
+      return raw_text
+  except Exception as e:
+    print(str(e))
+    
+
+
+async def write_file(n, content):
+  if(content):
+    async with aiofiles.open(n, 'w') as f:
+      print(f'Started writing {n}')
+      await f.write(content)
+      print(f'Finished writing {n}')
+      
+
+
+async def main(urls):
+  tasks = []
+  
+  for url in urls:
+    n = url.split('//')[-1]
+    filename = f'{n}.html'
+    html = await dowload_url(url)
+    tasks.append(write_file(filename, html))
+    
+  await asyncio.gather(*tasks)
+
+  
+
+def get_metadata(text):
+  try:
+    soup = BeautifulSoup(html, 'html.parser')
+    links = soup.find_all('a', href=True)
+    imgs = soup.find_all('img')
+    if os.path.isfile(filename):
+      tim = time.ctime(os.path.getctime(filename))
+    return len(links), len(imgs), tim
+  except Exception as e:
+    print(str(e))
+    
+
+
+
+ar = len(sys.argv)
+
+
+if ar != 1:
+
+  if sys.argv[1] != '--metadata' and ar >= 2:
+    urls = sys.argv[1:ar]
+    asyncio.run(main(urls))
+    
+  elif(ar == 3):
+    url = sys.argv[2]
+    n = url.split('//')[-1]
+    filename = f'{n}.html'
+    
+    with open(filename, 'r') as f:
+      html = f.read()
+      links, imgs, times = get_metadata(html)
+      
+    print(f'site: {n} num_links: {links} images: {imgs} last_fetch: {times} + UTC')
+    
+  else:
+    print('Invalid number or arguments')
+    
+else:
+  print('Invalid number or arguments')

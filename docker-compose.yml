@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  users-service:
+    container_name: container-6
+    build: .
+    stdin_open: true
+    tty: true
