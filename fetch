@@ -76,7 +76,7 @@ if ar != 1:
       html = f.read()
       links, imgs, times = get_metadata(html)
       
-    print(f'site: {n} num_links: {links} images: {imgs} last_fetch: {times} + UTC')
+    print(f'site: {n} num_links: {links} images: {imgs} last_fetch: {times} UTC')
     
   else:
     print('Invalid number or arguments')
