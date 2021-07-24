@@ -14,7 +14,7 @@
   - https://github.com/DarthIt0/Backend-test/archive/refs/heads/main.zip
 
 
-#### To build the container, with Docker and docker-compose already installed, run:
+#### To build the container (with Docker and docker-compose already installed) run:
 
   - docker-compose up --build
 
